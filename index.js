@@ -9,28 +9,35 @@ const fs = require('fs')
 
     
 
-//     await page.goto('https://www.ryanscomputers.com/category/all-laptop-asus?limit=120&osp=0&page=1')
+//     await page.goto('https://www.ryanscomputers.com/category/laptop-all-laptop')
 
 
-//     const laptops = await page.evaluate(()=> Array.from(document.querySelectorAll('.grid-container .product-home-card .category-single-product .card  '), (e)=> ({
-//           title: e.querySelector( '.card-body .card-text a').innerText,
-//           price: e.querySelector( '.card-body .pr-text').innerText,
-//           url:   e.querySelector( '.card-body .card-text a').href,
-//           img:   e.querySelector('.image-box img ').getAttribute("src")  
-//     }))
-//     )
+//     const laptops = await page.evaluate(()=> 
     
+    
+//     Array.from(document.querySelectorAll('.grid-container .product-home-card .category-single-product .card '),
+//        (e)=> {
+       
+//         const liElements = e.querySelectorAll('.card-body .short-desc-attr .category-info .card-text') 
+//         const descArray  = Array.from(liElements, li => li.innerText)
+    
+//         return {
+//             desc: descArray 
+
+//         }
+    
+    
+//     }))
     
 //     console.log(laptops)
 
-    // save data to json file
-    // fs.writeFile('asusLaptops.json', JSON.stringify(laptops), (err) => {
-    //     if(err) throw err;
-    //     console.log('file saved')
-    // } )
+//     //save data to json file
+//     // fs.writeFile('asusLaptops.json', JSON.stringify(laptops), (err) => {
+//     //     if(err) throw err;
+//     //     console.log('file saved')
+//     // } )
 
-//                                       //.category-single-product for each product
-//                                       // .product-home-card
+          
 //     await browser.close()
 // }
 
@@ -50,12 +57,16 @@ async function run() {
     return await page.evaluate(() =>
       Array.from(document.querySelectorAll('.grid-container .product-home-card .category-single-product .card  '), (e) => {
         const priceElement = e.querySelector('.card-body .pr-text');
+        const liElements = e.querySelectorAll('.card-body .short-desc-attr .category-info .card-text ') 
+        const descArray  = Array.from(liElements, li => li.innerText)                
         return {
-        title: e.querySelector('.card-body .card-text a').innerText,
-        price: priceElement ? priceElement.innerText : 'N/A',
-        url:   e.querySelector( '.card-body .card-text a').href,
-        img:   e.querySelector('.image-box img ').getAttribute("src")
-        } 
+         title: e.querySelector('.card-body .card-text a').innerText,
+         price: priceElement ? priceElement.innerText : 'N/A',
+         url:   e.querySelector( '.card-body .card-text a').href,
+         img:   e.querySelector('.image-box img ').getAttribute("src"),
+         desc:  descArray
+               
+    } 
 
         
       }))
@@ -90,12 +101,15 @@ async function run() {
     pageCounter++;
   }
 
-  // save data to json file
-  fs.writeFile('asusLaptopsRyans.json', JSON.stringify(allLaptops), (err) => {
-    if(err) throw err;
-    console.log('file saved')
-} )
-  await browser.close();
+   // save data to json file
+   fs.writeFile('asusLaptopsRyansDetails.json', JSON.stringify(allLaptops), (err) => {
+     if(err) throw err;
+     console.log('file saved')
+ } )
+
+ console.log(allLaptops)
+  
+await browser.close();
 }
 
 run();
